@@ -9,7 +9,6 @@ from .models import Players, Team, Matches, Points
 
 
 def teams_list(request):
-    """ showing all teams and logos """
     cursor = connection.cursor()
     cursor.execute('''select * from ipl_team''')
     teams = cursor.fetchall()
@@ -17,7 +16,6 @@ def teams_list(request):
 
 
 def add_player(request):
-    """ adding players to respective teams"""
     cursor = connection.cursor()
     cursor.execute('''select * from ipl_team''')
     team = cursor.fetchall()
@@ -26,7 +24,6 @@ def add_player(request):
 
 
 def save_player(request):
-    """ saving player details of adding player"""
     if request.method == 'POST':
         form_obj = PlayersForm(request.POST, request.FILES)
         if form_obj.is_valid():
@@ -38,11 +35,6 @@ def save_player(request):
 
 
 def team_players(request, id):
-
-    """ getting all team players individually"""
-    import pdb
-    # pdb.set_trace()
-    # list1 = Players.objects.filter(team__id=id)
     cursor=connection.cursor()
     cursor.execute(f''' select *
 from ipl_team
@@ -54,11 +46,7 @@ where ipl_team.id = {id}''')
 
 
 def player_info(request,id):
-    """ each player informatio"""
-    # pdb.set_trace()
-    # cursor = connection.cursor()
-    # cursor.execute('''select * from teams_players where id={}'''.format(id))
-    # player = cursor.fetchone()
+
     player=Players.objects.get(id=id)
     return render(request,'ipl/playerinfo.html',{'player':player})
 

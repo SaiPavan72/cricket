@@ -1,5 +1,4 @@
 from django.contrib import admin
-# Register your models here.
 from ipl.models import Team,Players,Matches,Points
 
 admin.site.register(Team)
