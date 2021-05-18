@@ -1,0 +1,30 @@
+<marquee><h1>VIVO IPL 2021</h1></marquee>
+<body bgcolor="full skyblue">
+<table border="2" align="top">
+    <thead>
+    <tr>
+        <th>logo</th>
+        <th>Team Name</th>
+        <th>state</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for team in teams %}
+
+    <tr>
+        <td><img src="/media/{{team.2}}" height="50" width="50"></td>
+        <td><a href="/ipl/{{team.0}}/team_players/">{{team.1}}</a></td>
+        <td>{{team.3}}</td>
+        <br>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<br>
+<br>
+<a href="/ipl/add_player/">Add players</a><br>
+<a href="/ipl/matches/">matches</a><br>
+<a href="/ipl/points/">points table</a><br>
+{% if error %}
+{{error}}
+{% endif %}
