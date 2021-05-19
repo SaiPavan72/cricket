@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 
 from .forms import PlayersForm
-from .models import Players, Team, Matches, Points
+from .models import Players, Team,  Points, Match
 
 
 def teams_list(request):
@@ -57,6 +57,7 @@ def matches(request):
     ex = teams.exclude(team_name=team1.team_name)
     team2 = random.choice(ex)
     winner = random.choice((team1, team2))
+    Match.objects.create(team1=team1,team2=team2,result=winner)
     win_tm, flag = Points.objects.get_or_create(team=winner)
     win_tm.played += 1
     win_tm.won += 1
@@ -78,3 +79,6 @@ def points(request):
     point=Points.objects.all
     return render(request,'ipl/points.html',{'point':point})
 
+def match_history(request):
+    match = Match.objects.all
+    return render(request,'ipl/history.html',{"match":match})

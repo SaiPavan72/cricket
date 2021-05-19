@@ -29,17 +29,10 @@ class Players(models.Model):
         return self.player_fname
 
 
-class Matches(models.Model):
-    class Match(models.Model):
-        match_id = models.DecimalField(max_digits=2, primary_key=True, decimal_places=0)
-        date = models.DateField()
-        time = models.TimeField()
-        team1 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='team_one')
-        team2 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='team_two')
-        result = models.ForeignKey(Team, max_length=50, null=True, blank=True, on_delete=models.CASCADE)
-
-        def __str__(self):
-            return self.match_id
+class Match(models.Model):
+    team1 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='team_one')
+    team2 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='team_two')
+    result = models.ForeignKey(Team, max_length=50, null=True, blank=True, on_delete=models.CASCADE)
 
 
 class Points(models.Model):
