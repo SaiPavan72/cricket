@@ -1,14 +1,14 @@
+"""ipl app project used in cricket """
 import random
-
 from django.db import connection
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-
+from django.http import  HttpResponseRedirect
 from .forms import PlayersForm
-from .models import Players, Team,  Points, Match
+from .models import Players, Team, Points, Match
 
 
 def teams_list(request):
+    """Showing all team names and logos and states """
     cursor = connection.cursor()
     cursor.execute('''select * from ipl_team''')
     teams = cursor.fetchall()
@@ -16,6 +16,7 @@ def teams_list(request):
 
 
 def add_player(request):
+    """Adding players to respective teams"""
     cursor = connection.cursor()
     cursor.execute('''select * from ipl_team''')
     team = cursor.fetchall()
@@ -24,6 +25,7 @@ def add_player(request):
 
 
 def save_player(request):
+    """Saving player data"""
     if request.method == 'POST':
         form_obj = PlayersForm(request.POST, request.FILES)
         if form_obj.is_valid():
@@ -34,30 +36,31 @@ def save_player(request):
     return HttpResponseRedirect('/ipl/')
 
 
-def team_players(request, id):
-    cursor=connection.cursor()
-    cursor.execute(f''' select *
-from ipl_team
+def team_players(request, team_id):
+    """getting all the players individually"""
+    cursor = connection.cursor()
+    cursor.execute(f''' select * from ipl_team
 join ipl_players
 on ipl_team.id = ipl_players.team_id
-where ipl_team.id = {id}''')
-    list1=cursor.fetchall()
+where ipl_team.id = {team_id}''')
+    list1 = cursor.fetchall()
     return render(request, 'ipl/playerlist.html', {'list': list1})
 
 
-def player_info(request,id):
-
-    player=Players.objects.get(id=id)
-    return render(request,'ipl/playerinfo.html',{'player':player})
+def player_info(request, players_id):
+    """Each player information"""
+    player = Players.objects.get(players_id)
+    return render(request, 'ipl/playerinfo.html', {'player': player})
 
 
 def matches(request):
+    """Save the match and show the winner"""
     teams = Team.objects.all()
     team1 = random.choice(teams)
     ex = teams.exclude(team_name=team1.team_name)
     team2 = random.choice(ex)
     winner = random.choice((team1, team2))
-    Match.objects.create(team1=team1,team2=team2,result=winner)
+    Match.objects.create(team1=team1, team2=team2, result=winner)
     win_tm, flag = Points.objects.get_or_create(team=winner)
     win_tm.played += 1
     win_tm.won += 1
@@ -72,13 +75,17 @@ def matches(request):
     loss_tm.lost += 1
     loss_tm.points += 0
     loss_tm.save()
-    return render(request, "ipl/points_table.html", {"win": win_tm, "loss": loss_tm,"teams": teams})
+    return render(request, "ipl/points_table.html",
+                  {"win": win_tm, "loss": loss_tm, "teams": teams})
 
 
 def points(request):
-    point=Points.objects.all
-    return render(request,'ipl/points.html',{'point':point})
+    """All teams Points table"""
+    point = Points.objects.all()
+    return render(request, 'ipl/points.html', {'point': point})
+
 
 def match_history(request):
-    match = Match.objects.all
-    return render(request,'ipl/history.html',{"match":match})
+    """All teams Matches History"""
+    match = Match.objects.all()
+    return render(request, 'ipl/history.html', {"match": match})
